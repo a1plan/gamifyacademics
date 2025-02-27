@@ -2,9 +2,10 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Gamepad2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -16,6 +17,10 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleLogin = () => {
+    navigate('/role-selection');
+  };
 
   return (
     <header
@@ -56,7 +61,10 @@ const Navbar = () => {
             >
               Contact
             </Button>
-            <Button className="font-medium bg-brand-purple hover:bg-brand-purple-dark text-white">
+            <Button 
+              className="font-medium bg-brand-purple hover:bg-brand-purple-dark text-white"
+              onClick={handleLogin}
+            >
               Login
             </Button>
           </div>

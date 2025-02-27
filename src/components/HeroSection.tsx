@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +8,7 @@ import { School, ArrowRight, Gamepad2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   const [schoolName, setSchoolName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -32,8 +34,12 @@ const HeroSection = () => {
         description: `Successfully logged in as ${schoolName}`,
       });
       setIsLoading(false);
-      // Here you would typically redirect to dashboard or home page
+      navigate('/role-selection');
     }, 1500);
+  };
+
+  const handleExploreDemo = () => {
+    navigate('/role-selection');
   };
 
   return (
@@ -86,7 +92,11 @@ const HeroSection = () => {
               </form>
               
               <div className="mt-8 flex items-center">
-                <Button variant="outline" className="gap-2 hover-scale">
+                <Button 
+                  variant="outline" 
+                  className="gap-2 hover-scale"
+                  onClick={handleExploreDemo}
+                >
                   Explore Trial Game
                   <ArrowRight className="h-4 w-4" />
                 </Button>

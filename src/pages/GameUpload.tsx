@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Upload, 
@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 import {
   Select,
   SelectContent,
@@ -38,8 +39,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import AdminSidebar from '@/components/admin/AdminSidebar';
+import { supabase } from '@/integrations/supabase/client';
 
-// Mock data for grades, subjects, and supported formats
+// Data for grades, subjects, and supported formats
 const grades = [
   "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5", 
   "Grade 6", "Grade 7", "Grade 8", "Grade 9", "Grade 10",
@@ -70,7 +72,9 @@ const supportedFormats = [
 
 const GameUpload = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast: uiToast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -111,19 +115,25 @@ const GameUpload = () => {
   
   const clearFile = () => {
     setUploadedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
   
   const clearThumbnail = () => {
     setThumbnailFile(null);
     setThumbnailPreview(null);
+    if (thumbnailInputRef.current) {
+      thumbnailInputRef.current.value = '';
+    }
   };
   
-  const handleUpload = (e: React.FormEvent) => {
+  const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
-    if (!gameTitle || !selectedGrade || !selectedSubject || !uploadedFile) {
-      toast({
+    if (!gameTitle || !selectedGrade || !selectedSubject || !uploadedFile || !selectedFormat) {
+      uiToast({
         title: "Missing Fields",
         description: "Please fill in all the required fields and upload a game file",
         variant: "destructive",
@@ -132,25 +142,67 @@ const GameUpload = () => {
     }
     
     setIsUploading(true);
+    setUploadProgress(10);
     
-    // Simulate upload progress
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 5;
-      setUploadProgress(progress);
+    try {
+      // Create a FormData object to send the files and metadata
+      const formData = new FormData();
+      formData.append('gameFile', uploadedFile);
       
-      if (progress >= 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          toast({
-            title: "Upload Successful",
-            description: `${gameTitle} has been uploaded and is now available in the game library.`,
-          });
-          setIsUploading(false);
-          navigate('/admin/games');
-        }, 500);
+      if (thumbnailFile) {
+        formData.append('thumbnail', thumbnailFile);
       }
-    }, 300);
+      
+      // Add game metadata as JSON
+      const gameData = {
+        title: gameTitle,
+        description: gameDescription,
+        grade: selectedGrade,
+        subject: selectedSubject,
+        chapterNumber: chapterNumber || null,
+        difficulty: difficulty || null,
+        estimatedTime: estimatedTime || null,
+        format: selectedFormat,
+        learningStandards: learningStandards || null,
+      };
+      
+      formData.append('gameData', JSON.stringify(gameData));
+      
+      setUploadProgress(30);
+      
+      // Upload the game using the Edge Function
+      const { data, error } = await supabase.functions.invoke('upload-game', {
+        body: formData,
+      });
+      
+      setUploadProgress(90);
+      
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      setUploadProgress(100);
+      
+      // Show success message
+      toast.success('Game Uploaded', {
+        description: `${gameTitle} has been uploaded and is now available in the game library.`,
+        duration: 5000,
+      });
+      
+      // Navigate back to the games management page
+      setTimeout(() => {
+        navigate('/admin/games');
+      }, 1000);
+    } catch (error) {
+      console.error('Upload error:', error);
+      uiToast({
+        title: "Upload Failed",
+        description: error instanceof Error ? error.message : 'Something went wrong during the upload.',
+        variant: "destructive",
+      });
+      setUploadProgress(0);
+      setIsUploading(false);
+    }
   };
   
   return (
@@ -177,7 +229,7 @@ const GameUpload = () => {
             <Button 
               variant="ghost" 
               size="icon"
-              onClick={() => navigate('/admin')}
+              onClick={() => navigate('/admin/games')}
               className="mr-4"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -355,6 +407,7 @@ const GameUpload = () => {
                         ) : (
                           <div className="border border-dashed border-slate-300 rounded-md p-6 text-center">
                             <Input
+                              ref={thumbnailInputRef}
                               type="file"
                               id="thumbnail-upload"
                               className="hidden"
@@ -424,6 +477,7 @@ const GameUpload = () => {
                   ) : (
                     <div className="border border-dashed border-slate-300 rounded-md p-6 text-center">
                       <Input
+                        ref={fileInputRef}
                         type="file"
                         id="file-upload"
                         className="hidden"
@@ -519,7 +573,7 @@ const GameUpload = () => {
                       type="button"
                       variant="outline"
                       className="w-full"
-                      onClick={() => navigate('/admin')}
+                      onClick={() => navigate('/admin/games')}
                       disabled={isUploading}
                     >
                       Cancel

@@ -12,6 +12,9 @@ import StudentDashboard from "./pages/StudentDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import GameUpload from "./pages/GameUpload";
+import GamesManagement from "./pages/GamesManagement";
+import SchoolsManagement from "./pages/SchoolsManagement";
+import UsersManagement from "./pages/UsersManagement";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +32,9 @@ const App = () => (
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/games/upload" element={<GameUpload />} />
+          <Route path="/admin/games" element={<GamesManagement />} />
+          <Route path="/admin/schools" element={<SchoolsManagement />} />
+          <Route path="/admin/users" element={<UsersManagement />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

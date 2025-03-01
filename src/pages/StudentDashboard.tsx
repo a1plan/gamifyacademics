@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,7 +18,10 @@ import {
   UserCircle,
   Clock,
   ThumbsUp,
-  GraduationCap
+  GraduationCap,
+  Pencil,
+  Camera,
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -27,6 +29,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 // Mock data
 const studentInfo = {
@@ -40,7 +45,8 @@ const studentInfo = {
   completedGames: 18,
   hoursPlayed: 24,
   streakDays: 14,
-  level: 5
+  level: 5,
+  bio: "Hi, I'm Arjun! I love solving math problems and playing educational games. I want to become a scientist one day."
 };
 
 const learningPath = [
@@ -163,6 +169,21 @@ const StudentDashboard = () => {
   const [commentsList, setCommentsList] = useState(gameComments);
   const [activeTab, setActiveTab] = useState('overview');
   const [goodiesList, setGoodiesList] = useState(goodies);
+  
+  // Profile editing state
+  const [studentData, setStudentData] = useState(studentInfo);
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const [isEditingAvatar, setIsEditingAvatar] = useState(false);
+  const [newBio, setNewBio] = useState(studentInfo.bio);
+  const [newAvatarUrl, setNewAvatarUrl] = useState(studentInfo.avatar);
+  const [avatarOptions] = useState([
+    "https://i.pravatar.cc/150?img=11",
+    "https://i.pravatar.cc/150?img=12",
+    "https://i.pravatar.cc/150?img=13",
+    "https://i.pravatar.cc/150?img=14",
+    "https://i.pravatar.cc/150?img=15",
+    "https://i.pravatar.cc/150?img=16",
+  ]);
 
   const selectedGame = unlockedGames.find(game => game.id === selectedGameId);
 
@@ -184,8 +205,8 @@ const StudentDashboard = () => {
     const newCommentObj = {
       id: commentsList.length + 1,
       gameId: selectedGameId,
-      user: studentInfo.name,
-      avatar: studentInfo.avatar,
+      user: studentData.name,
+      avatar: studentData.avatar,
       comment: newComment,
       date: "Just now",
       likes: 0
@@ -209,6 +230,48 @@ const StudentDashboard = () => {
       title: "Goodie Claimed!",
       description: `You've successfully claimed ${goodiesList.find(g => g.id === goodieId)?.title}!`,
     });
+  };
+
+  // Profile editing functions
+  const handleSaveBio = () => {
+    setStudentData({
+      ...studentData,
+      bio: newBio
+    });
+    setIsEditingBio(false);
+    
+    toast({
+      title: "Profile Updated",
+      description: "Your bio has been updated successfully.",
+    });
+  };
+
+  const handleSelectAvatar = (avatarUrl: string) => {
+    setNewAvatarUrl(avatarUrl);
+  };
+
+  const handleSaveAvatar = () => {
+    setStudentData({
+      ...studentData,
+      avatar: newAvatarUrl
+    });
+    setIsEditingAvatar(false);
+    
+    toast({
+      title: "Profile Updated",
+      description: "Your avatar has been updated successfully.",
+    });
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewAvatarUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const container = {
@@ -243,7 +306,7 @@ const StudentDashboard = () => {
               <h1 className="text-xl font-bold flex items-center gap-2">
                 Student Dashboard
                 <Badge variant="outline" className="ml-2 bg-brand-accent-purple/50">
-                  {studentInfo.grade}
+                  {studentData.grade}
                 </Badge>
               </h1>
             </div>
@@ -274,33 +337,42 @@ const StudentDashboard = () => {
             >
               <div className="h-32 bg-gradient-to-r from-brand-purple to-brand-purple-light relative">
                 <div className="absolute -bottom-16 left-6">
-                  <Avatar className="h-32 w-32 border-4 border-white shadow-md">
-                    <AvatarImage src={studentInfo.avatar} alt={studentInfo.name} />
-                    <AvatarFallback className="text-2xl bg-brand-purple text-white">
-                      {studentInfo.name.split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="relative">
+                    <Avatar className="h-32 w-32 border-4 border-white shadow-md">
+                      <AvatarImage src={studentData.avatar} alt={studentData.name} />
+                      <AvatarFallback className="text-2xl bg-brand-purple text-white">
+                        {studentData.name.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <Button 
+                      size="icon" 
+                      className="absolute bottom-0 right-0 bg-white hover:bg-slate-100 text-slate-700 shadow-md h-8 w-8"
+                      onClick={() => setIsEditingAvatar(true)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
               
               <div className="pt-20 pb-6 px-6">
-                <h2 className="text-2xl font-bold">{studentInfo.name}</h2>
+                <h2 className="text-2xl font-bold">{studentData.name}</h2>
                 <div className="flex items-center text-sm text-slate-500 mt-1 mb-4">
                   <MapPin className="h-4 w-4 mr-1" />
-                  {studentInfo.school}
+                  {studentData.school}
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="text-center p-3 bg-slate-50 rounded-lg">
                     <p className="text-xs text-slate-500 mb-1">Total Points</p>
                     <p className="text-xl font-bold text-brand-purple">
-                      {studentInfo.totalPoints}
+                      {studentData.totalPoints}
                     </p>
                   </div>
                   <div className="text-center p-3 bg-slate-50 rounded-lg">
                     <p className="text-xs text-slate-500 mb-1">Games Completed</p>
                     <p className="text-xl font-bold text-brand-purple">
-                      {studentInfo.completedGames}
+                      {studentData.completedGames}
                     </p>
                   </div>
                 </div>
@@ -308,21 +380,40 @@ const StudentDashboard = () => {
                 <div className="space-y-4 mb-5">
                   <div>
                     <div className="flex justify-between text-sm mb-1">
-                      <span className="text-slate-700 font-medium">Level {studentInfo.level}</span>
-                      <span className="text-slate-500">Level {studentInfo.level + 1}</span>
+                      <span className="text-slate-700 font-medium">Level {studentData.level}</span>
+                      <span className="text-slate-500">Level {studentData.level + 1}</span>
                     </div>
                     <Progress value={65} className="h-2" />
                   </div>
                   <div className="flex justify-between text-sm">
                     <div className="flex items-center">
                       <Clock className="h-4 w-4 mr-1.5 text-slate-400" />
-                      <span>{studentInfo.hoursPlayed} hrs played</span>
+                      <span>{studentData.hoursPlayed} hrs played</span>
                     </div>
                     <div className="flex items-center">
                       <Sparkles className="h-4 w-4 mr-1.5 text-orange-400" />
-                      <span>{studentInfo.streakDays} day streak</span>
+                      <span>{studentData.streakDays} day streak</span>
                     </div>
                   </div>
+                </div>
+                
+                {/* Bio Section */}
+                <div className="p-4 bg-slate-50 rounded-lg mb-5 relative">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-sm font-medium text-slate-700">About Me</h3>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-6 w-6 text-slate-400 hover:text-brand-purple"
+                      onClick={() => {
+                        setNewBio(studentData.bio);
+                        setIsEditingBio(true);
+                      }}
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                  <p className="text-sm text-slate-600">{studentData.bio}</p>
                 </div>
                 
                 <Button className="w-full bg-brand-purple hover:bg-brand-purple-dark gap-2">
@@ -508,8 +599,8 @@ const StudentDashboard = () => {
                         <form onSubmit={handleSubmitComment} className="mb-6">
                           <div className="flex items-start gap-3">
                             <Avatar className="h-10 w-10">
-                              <AvatarImage src={studentInfo.avatar} alt={studentInfo.name} />
-                              <AvatarFallback>{studentInfo.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                              <AvatarImage src={studentData.avatar} alt={studentData.name} />
+                              <AvatarFallback>{studentData.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                             </Avatar>
                             <div className="flex-1">
                               <textarea 
@@ -647,222 +738,3 @@ const StudentDashboard = () => {
                         </div>
                       </motion.div>
                     ))}
-                  </motion.div>
-                )}
-              </TabsContent>
-              
-              {/* Leaderboard Tab */}
-              <TabsContent value="leaderboard">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"
-                >
-                  <div className="p-6 border-b border-slate-100">
-                    <h3 className="text-lg font-semibold flex items-center">
-                      <Trophy className="h-5 w-5 mr-2 text-brand-purple" />
-                      Class Leaderboard
-                    </h3>
-                    <p className="text-sm text-slate-500 mt-1">
-                      See how you compare with other students in {studentInfo.grade}
-                    </p>
-                  </div>
-                  
-                  <div className="p-6">
-                    <div className="space-y-2">
-                      {leaderboard.map((student) => (
-                        <div 
-                          key={student.rank} 
-                          className={`flex items-center p-3 rounded-lg ${
-                            student.isCurrentUser ? 'bg-brand-purple/10 border border-brand-purple/20' : 'hover:bg-slate-50'
-                          }`}
-                        >
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-                            student.rank === 1 ? 'bg-amber-100 text-amber-600' :
-                            student.rank === 2 ? 'bg-slate-100 text-slate-600' :
-                            student.rank === 3 ? 'bg-orange-100 text-orange-600' :
-                            'bg-slate-50 text-slate-500'
-                          }`}>
-                            {student.rank}
-                          </div>
-                          <Avatar className="ml-3 h-10 w-10">
-                            <AvatarImage src={student.avatar} alt={student.name} />
-                            <AvatarFallback>{student.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                          </Avatar>
-                          <div className="ml-3 flex-1">
-                            <div className="flex justify-between items-center">
-                              <div>
-                                <p className="font-medium">
-                                  {student.name}
-                                  {student.isCurrentUser && (
-                                    <Badge className="ml-2 bg-brand-purple text-white">You</Badge>
-                                  )}
-                                </p>
-                                <p className="text-xs text-slate-500">{student.grade}</p>
-                              </div>
-                              <div className="flex items-center">
-                                <Star className="h-4 w-4 text-amber-500 mr-1" />
-                                <span className="font-bold">{student.points}</span>
-                                <span className="text-xs text-slate-500 ml-1">pts</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <div className="mt-6 text-center">
-                      <Button className="bg-brand-purple hover:bg-brand-purple-dark">
-                        View Full Leaderboard
-                      </Button>
-                    </div>
-                  </div>
-                </motion.div>
-              </TabsContent>
-              
-              {/* Badges Tab */}
-              <TabsContent value="badges">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"
-                >
-                  <div className="p-6 border-b border-slate-100">
-                    <h3 className="text-lg font-semibold flex items-center">
-                      <Award className="h-5 w-5 mr-2 text-brand-purple" />
-                      My Achievements
-                    </h3>
-                    <p className="text-sm text-slate-500 mt-1">
-                      Badges and certificates you've earned through your learning journey
-                    </p>
-                  </div>
-                  
-                  <div className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {badges.map((badge) => (
-                        <motion.div
-                          key={badge.id}
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.3 }}
-                          className="flex items-center p-4 rounded-lg border border-slate-200 hover:shadow-sm hover:border-brand-purple/20 transition-all duration-200"
-                        >
-                          <div className="h-16 w-16 rounded-full bg-brand-accent-purple flex items-center justify-center text-3xl">
-                            {badge.image}
-                          </div>
-                          <div className="ml-4 flex-1">
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <h4 className="font-semibold">{badge.title}</h4>
-                                <p className="text-xs text-slate-500 mt-1">{badge.description}</p>
-                              </div>
-                              <Badge variant="outline" className="text-xs bg-slate-50">
-                                {badge.date}
-                              </Badge>
-                            </div>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                    
-                    <div className="mt-8 p-6 bg-brand-accent-yellow/30 rounded-xl border border-brand-accent-yellow/50 text-center">
-                      <GraduationCap className="h-12 w-12 text-amber-600 mx-auto mb-3" />
-                      <h3 className="text-lg font-semibold mb-2">Certificate of Excellence</h3>
-                      <p className="text-sm text-slate-600 mb-4">
-                        You've earned a certificate for completing all Mathematics games with excellent scores!
-                      </p>
-                      <Button className="bg-amber-500 hover:bg-amber-600">
-                        Download Certificate
-                      </Button>
-                    </div>
-                  </div>
-                </motion.div>
-              </TabsContent>
-              
-              {/* Goodies Tab */}
-              <TabsContent value="goodies">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"
-                >
-                  <div className="p-6 border-b border-slate-100">
-                    <h3 className="text-lg font-semibold flex items-center">
-                      <Gift className="h-5 w-5 mr-2 text-brand-purple" />
-                      Cool Goodies
-                    </h3>
-                    <p className="text-sm text-slate-500 mt-1">
-                      Earn points and redeem them for exciting rewards and digital goodies
-                    </p>
-                  </div>
-                  
-                  <div className="p-6">
-                    <div className="flex items-center justify-between p-4 bg-brand-accent-purple/20 rounded-lg mb-6">
-                      <div className="flex items-center">
-                        <Star className="h-5 w-5 text-brand-purple mr-2" />
-                        <span className="font-medium">Your Points Balance:</span>
-                      </div>
-                      <div className="text-xl font-bold text-brand-purple">{studentInfo.totalPoints} points</div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {goodiesList.map((goodie) => (
-                        <motion.div
-                          key={goodie.id}
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.3 }}
-                          className={`border rounded-lg overflow-hidden text-center transition-all duration-200 ${
-                            goodie.claimed ? 'bg-slate-50 border-slate-200' : 'border-brand-purple/20 hover:shadow-md'
-                          }`}
-                        >
-                          <div className="p-6">
-                            <div className="text-4xl mb-4">{goodie.image}</div>
-                            <h4 className="font-semibold mb-1">{goodie.title}</h4>
-                            <div className="flex items-center justify-center text-sm">
-                              <Star className="h-4 w-4 text-amber-500 mr-1" />
-                              <span className="font-medium">{goodie.points} points</span>
-                            </div>
-                          </div>
-                          
-                          <div className={`p-3 text-sm ${
-                            goodie.claimed ? 'bg-slate-100 text-slate-500' : 'bg-brand-purple/10'
-                          }`}>
-                            {goodie.claimed ? (
-                              <span className="flex items-center justify-center">
-                                <Award className="h-4 w-4 mr-1" />
-                                Already Claimed
-                              </span>
-                            ) : (
-                              <Button 
-                                className={`w-full ${
-                                  studentInfo.totalPoints >= goodie.points 
-                                    ? 'bg-brand-purple hover:bg-brand-purple-dark' 
-                                    : 'bg-slate-300 hover:bg-slate-300 cursor-not-allowed'
-                                }`}
-                                size="sm"
-                                disabled={studentInfo.totalPoints < goodie.points}
-                                onClick={() => claimGoodie(goodie.id)}
-                              >
-                                Claim Now
-                              </Button>
-                            )}
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              </TabsContent>
-            </Tabs>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
-};
-
-export default StudentDashboard;

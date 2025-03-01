@@ -63,7 +63,7 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Custom colors for our LMS
+				// Custom colors for MindsMaidaan
 				brand: {
 					purple: {
 						light: '#D6BCFA',
@@ -74,6 +74,12 @@ export default {
 						green: '#F2FCE2',
 						yellow: '#FEF7CD',
 						purple: '#E5DEFF',
+					},
+					// New custom colors based on requested palette
+					mindsmaidaan: {
+						navy: '#211C6A',
+						teal: '#59B4C3',
+						green: '#74E291',
 					}
 				}
 			},
@@ -139,8 +145,12 @@ export default {
 				'spin-slow': 'spin-slow 15s linear infinite'
 			},
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
-				display: ['Lexend', 'sans-serif']
+				sans: ['Quicksand', 'sans-serif'],
+				display: ['Lexend', 'sans-serif'],
+				// Add the requested fonts
+				'fredoka': ['"Fredoka One"', 'cursive'],
+				'kg-primary': ['"KG Primary Penmanship"', 'cursive'],
+				'quicksand': ['Quicksand', 'sans-serif']
 			}
 		}
 	},

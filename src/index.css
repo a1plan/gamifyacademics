@@ -1,4 +1,5 @@
 
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
@@ -7,8 +8,8 @@
 
 @layer base {
   :root {
-    --background: 260 55% 99%;
-    --foreground: 260 10% 10%;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 10%;
 
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
@@ -16,24 +17,24 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
 
-    --primary: 260 75% 75%;
+    --primary: 243 56% 26%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 260 40% 96.1%;
-    --secondary-foreground: 260 45% 11.2%;
+    --secondary: 188 54% 56%;
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 260 40% 96.1%;
-    --muted-foreground: 260 15% 45%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
 
-    --accent: 260 40% 96.1%;
-    --accent-foreground: 260 45% 11.2%;
+    --accent: 142 68% 70%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 260 20% 90%;
-    --input: 260 20% 90%;
-    --ring: 260 75% 75%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 243 56% 26%;
 
     --radius: 0.75rem;
 
@@ -48,33 +49,33 @@
   }
 
   .dark {
-    --background: 260 25% 10%;
-    --foreground: 260 10% 98%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
 
-    --card: 260 25% 11%;
-    --card-foreground: 260 10% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 260 25% 11%;
-    --popover-foreground: 260 10% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 260 75% 75%;
-    --primary-foreground: 260 10% 98%;
+    --primary: 243 56% 30%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 260 25% 25%;
-    --secondary-foreground: 260 10% 98%;
+    --secondary: 188 54% 40%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 260 25% 25%;
-    --muted-foreground: 260 10% 70%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
 
-    --accent: 260 25% 25%;
-    --accent-foreground: 260 10% 98%;
+    --accent: 142 68% 40%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 260 25% 25%;
-    --input: 260 25% 25%;
-    --ring: 260 75% 75%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 243 56% 40%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -93,11 +94,11 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-quicksand;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight;
+    @apply font-fredoka tracking-tight;
   }
 }
 
@@ -117,6 +118,30 @@
   text-wrap: balance;
 }
 
+/* Kid-friendly button styles */
+.btn-primary {
+  @apply bg-brand-mindsmaidaan-navy text-white rounded-full px-6 py-3 font-bold transition-all hover:shadow-lg hover:scale-105 hover:bg-opacity-90;
+}
+
+.btn-secondary {
+  @apply bg-brand-mindsmaidaan-teal text-white rounded-full px-6 py-3 font-bold transition-all hover:shadow-lg hover:scale-105 hover:bg-opacity-90;
+}
+
+.btn-accent {
+  @apply bg-brand-mindsmaidaan-green text-brand-mindsmaidaan-navy rounded-full px-6 py-3 font-bold transition-all hover:shadow-lg hover:scale-105 hover:bg-opacity-90;
+}
+
+/* Kid-friendly section styles */
+.section-pattern {
+  @apply relative overflow-hidden;
+}
+
+.section-pattern::before {
+  content: "";
+  @apply absolute inset-0 bg-repeat opacity-5 pointer-events-none;
+  background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.4'%3E%3Cpath d='M10 0l9.9 10H0L10 0zm0 20L0 10h19.9L10 20z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
 /* For WebKit browsers (Chrome, Safari) */
 ::-webkit-scrollbar {
   width: 8px;
@@ -129,10 +154,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(155, 135, 245, 0.5);
+  background: rgba(33, 28, 106, 0.5);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(155, 135, 245, 0.8);
+  background: rgba(33, 28, 106, 0.8);
 }

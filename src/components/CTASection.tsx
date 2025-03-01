@@ -2,10 +2,13 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const CTASection = () => {
+  const navigate = useNavigate();
+
   return (
-    <section className="py-24 px-4">
+    <section className="py-20 px-4">
       <div className="container max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -20,12 +23,12 @@ const CTASection = () => {
               alt="Students using educational games" 
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-purple/90 to-brand-purple-dark/70"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-mindsmaidaan-navy/90 to-brand-mindsmaidaan-navy/70"></div>
           </div>
           
           <div className="relative py-16 px-6 md:px-12 lg:px-20">
             <div className="max-w-2xl">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              <h2 className="text-3xl md:text-4xl font-fredoka text-white mb-6">
                 Ready to Transform Learning in Your School?
               </h2>
               <p className="text-white/90 text-lg mb-8">
@@ -35,7 +38,8 @@ const CTASection = () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
                   size="lg"
-                  className="bg-white hover:bg-white/90 text-brand-purple"
+                  className="bg-white hover:bg-white/90 text-brand-mindsmaidaan-navy"
+                  onClick={() => navigate('/contact')}
                 >
                   Request Demo
                 </Button>
@@ -43,8 +47,9 @@ const CTASection = () => {
                   size="lg"
                   variant="outline"
                   className="border-white text-white hover:bg-white/10"
+                  onClick={() => navigate('/games')}
                 >
-                  Learn More <ArrowRight className="ml-2 h-4 w-4" />
+                  Try Free Games <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </div>

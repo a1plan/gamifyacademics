@@ -37,6 +37,8 @@ const ThreeJSHero = () => {
       new THREE.TorusGeometry(1, 0.4, 16, 50), // Circular object (like a ring/donut)
       new THREE.TetrahedronGeometry(1.2), // Triangular pyramid
       new THREE.DodecahedronGeometry(1), // 12-sided shape
+      new THREE.SphereGeometry(0.8, 32, 32), // Sphere (like a globe)
+      new THREE.BoxGeometry(1, 1, 1), // Cube (like a building block)
     ];
     
     const createMaterial = (color: number) => {
@@ -49,10 +51,13 @@ const ThreeJSHero = () => {
       });
     };
     
+    // MindsMaidaan color palette
     const colors = [
-      0x9b87f5, // Primary purple
-      0xD6BCFA, // Light purple
-      0xF2FCE2, // Soft green
+      0x211C6A, // Navy
+      0x59B4C3, // Teal
+      0x74E291, // Green
+      0x8A4FFF, // Purple accent
+      0xFFD166, // Yellow accent
     ];
     
     const objects: THREE.Mesh[] = [];

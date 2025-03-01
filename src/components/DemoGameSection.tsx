@@ -36,14 +36,14 @@ const GameCard = ({
       </div>
       <div className="p-5">
         <div className="flex justify-between items-start mb-3">
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <span className="px-2 py-1 bg-brand-accent-purple rounded-md text-xs font-medium text-brand-purple-dark">
+          <h3 className="text-lg font-fredoka">{title}</h3>
+          <span className="px-2 py-1 bg-brand-mindsmaidaan-green/20 rounded-md text-xs font-medium text-brand-mindsmaidaan-navy">
             {grade}
           </span>
         </div>
         <Button 
           variant="ghost" 
-          className="w-full justify-between text-brand-purple hover:text-brand-purple hover:bg-brand-purple/10"
+          className="w-full justify-between text-brand-mindsmaidaan-navy hover:text-brand-mindsmaidaan-navy hover:bg-brand-mindsmaidaan-navy/10"
         >
           Play Now <ArrowRight className="h-4 w-4" />
         </Button>
@@ -57,25 +57,43 @@ const games = [
     title: "Math Quest Adventure",
     subject: "Mathematics",
     grade: "Grade 3-5",
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b"
+    image: "https://images.unsplash.com/photo-1611348586840-ea9872d33411?q=80&w=2071&auto=format&fit=crop"
   },
   {
     title: "Science Explorer",
     subject: "Science",
     grade: "Grade 6-8",
-    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6"
+    image: "https://images.unsplash.com/photo-1533598313300-a2fccf637328?q=80&w=1978&auto=format&fit=crop"
   },
   {
     title: "Grammar Galaxy",
     subject: "English",
     grade: "Grade 4-6",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
+    image: "https://images.unsplash.com/photo-1615641448354-ca3abe6def79?q=80&w=1974&auto=format&fit=crop"
+  },
+  {
+    title: "History Heroes",
+    subject: "History",
+    grade: "Grade 5-7",
+    image: "https://images.unsplash.com/photo-1580130101228-847dc9d89ba9?q=80&w=1972&auto=format&fit=crop"
+  },
+  {
+    title: "Geography Explorer",
+    subject: "Geography",
+    grade: "Grade 4-6",
+    image: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce?q=80&w=1950&auto=format&fit=crop"
+  },
+  {
+    title: "Chemical Reactions",
+    subject: "Chemistry",
+    grade: "Grade 7-9",
+    image: "https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?q=80&w=2070&auto=format&fit=crop"
   },
 ];
 
 const DemoGameSection = () => {
   return (
-    <section className="py-24 px-4 bg-brand-accent-green/30">
+    <section id="games" className="py-20 px-4 section-pattern">
       <div className="container max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <motion.div
@@ -84,10 +102,10 @@ const DemoGameSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <span className="inline-flex items-center rounded-full px-4 py-1 text-xs font-medium bg-brand-purple/10 text-brand-purple mb-6">
+            <span className="inline-flex items-center rounded-full px-4 py-1 text-xs font-medium bg-brand-mindsmaidaan-navy/10 text-brand-mindsmaidaan-navy mb-6">
               Free Demo Games
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <h2 className="text-3xl md:text-4xl font-kg-primary mb-6 text-brand-mindsmaidaan-navy">
               Try Our Educational Games
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -113,7 +131,7 @@ const DemoGameSection = () => {
         <div className="mt-12 text-center">
           <Button
             size="lg"
-            className="bg-brand-purple hover:bg-brand-purple-dark text-white"
+            className="bg-brand-mindsmaidaan-teal hover:bg-brand-mindsmaidaan-teal/90 text-white"
           >
             View All Demo Games
             <ArrowRight className="ml-2 h-4 w-4" />

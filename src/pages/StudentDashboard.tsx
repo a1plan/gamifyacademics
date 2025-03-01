@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -28,7 +29,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -738,3 +739,104 @@ const StudentDashboard = () => {
                         </div>
                       </motion.div>
                     ))}
+                  </motion.div>
+                )}
+              </TabsContent>
+              
+              {/* Add other tabs content here */}
+              <TabsContent value="leaderboard" className="space-y-4">
+                {/* Leaderboard content */}
+              </TabsContent>
+              
+              <TabsContent value="badges" className="space-y-4">
+                {/* Badges content */}
+              </TabsContent>
+              
+              <TabsContent value="goodies" className="space-y-4">
+                {/* Goodies content */}
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
+      </main>
+      
+      {/* Bio editing dialog */}
+      <Dialog open={isEditingBio} onOpenChange={setIsEditingBio}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Bio</DialogTitle>
+            <DialogDescription>
+              Update your profile bio to let others know about you.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <Textarea
+              value={newBio}
+              onChange={(e) => setNewBio(e.target.value)}
+              placeholder="Tell us about yourself..."
+              className="min-h-[120px]"
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditingBio(false)}>Cancel</Button>
+            <Button onClick={handleSaveBio}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Avatar editing dialog */}
+      <Dialog open={isEditingAvatar} onOpenChange={setIsEditingAvatar}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Change Profile Picture</DialogTitle>
+            <DialogDescription>
+              Select a new avatar or upload your own image.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex justify-center mb-4">
+              <Avatar className="h-24 w-24 border-2 border-brand-purple">
+                <AvatarImage src={newAvatarUrl} alt="Preview" />
+                <AvatarFallback className="text-xl bg-brand-purple text-white">
+                  {studentData.name.split(' ').map(n => n[0]).join('')}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-2">
+              {avatarOptions.map((avatar, index) => (
+                <button
+                  key={index}
+                  className={`relative rounded-full overflow-hidden border-2 h-16 w-16 mx-auto ${
+                    newAvatarUrl === avatar ? 'border-brand-purple' : 'border-transparent'
+                  }`}
+                  onClick={() => handleSelectAvatar(avatar)}
+                >
+                  <img src={avatar} alt={`Avatar option ${index + 1}`} className="h-full w-full object-cover" />
+                </button>
+              ))}
+            </div>
+            
+            <div className="mt-2">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Upload your own
+              </label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                className="cursor-pointer"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditingAvatar(false)}>Cancel</Button>
+            <Button onClick={handleSaveAvatar}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+export default StudentDashboard;
